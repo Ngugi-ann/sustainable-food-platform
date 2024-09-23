@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ farmer.name }} - Farmer Details</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main_app/css/styles.css' %}">
+</head>
+<body>
+    <h1>{{ farmer.name }}</h1>
+    <p><strong>Location:</strong> {{ farmer.location }}</p>
+
+    <h2>Products</h2>
+    {% if farmer.product_set.all %}
+        <ul>
+            {% for product in farmer.product_set.all %}
+                <li>
+                    <strong>{{ product.name }}</strong>: {{ product.description }} - ${{ product.price }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No products available from this farmer at the moment.</p>
+    {% endif %}
+
+    <!-- Link to place an order -->
+    <a href="{% url 'order_farmer' farmer.id %}">Order from {{ farmer.name }}</a>
+    <!-- Back to list of all stakeholders -->
+    <p><a href="{% url 'index' %}">Back to list</a></p>
+</body>
+</html>

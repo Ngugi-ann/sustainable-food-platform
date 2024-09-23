@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainable Food Platform</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main_app/css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Welcome to the Sustainable Food Platform</h1>
+            
+            <!-- Display feedback messages using Django's messages framework -->
+            {% if messages %}
+                <div class="messages">
+                    <ul>
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <!-- Authenticated user content -->
+            {% if user.is_authenticated %}
+                <div class="user-info">
+                    <p>Logged in as {{ user.username }}.</p>
+                    {% if form %}
+                        <!-- Display profile creation/update form if user does not have a profile -->
+                        <div class="profile-form">
+                            <h2>Create or Update Your Profile</h2>
+                            <form method="post" action="{% url 'create_consumer_profile' %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    {{ form.as_p }}
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Profile</button>
+                            </form>
+                        </div>
+                    {% else %}
+                        <div class="consumer-content">
+                            <h2>Welcome, {{ user.username }}!</h2>
+                            <p>As a valued consumer, you have access to exclusive features.</p>
+                            <a href="{% url 'consumer_dashboard' %}" class="button">Go to your dashboard</a>
+                        </div>
+                    {% endif %}
+                    <a href="{% url 'logout' %}" class="button">Logout</a>
+                </div>
+            {% else %}
+                <div class="auth-prompt">
+                    <p>Not registered yet? Sign up or log in to explore more features.</p>
+                </div>
+            {% endif %}
+        </header>
+
+        <!-- About Us Section -->
+        <section id="intro">
+            <h2>About Us</h2>
+            <p>We are dedicated to promoting sustainable food practices by connecting farmers, processors, and distributors.</p>
+            <div id="intro-images" class="about-images">
+                <img src="{% static 'main_app/images/pexels-kostunrix-1209484.jpg' %}" alt="About Us Image" class="responsive-image">
+                <img src="{% static 'main_app/images/farm_produce.jpg' %}" alt="Farm Produce" class="responsive-image">
+                <img src="{% static 'main_app/images/onions.jpg' %}" alt="Onions" class="responsive-image">
+                <img src="{% static 'main_app/images/tomatoes.jpg' %}" alt="Tomatoes" class="responsive-image">
+            </div>
+        </section>
+
+        <!-- Stakeholders Section -->
+        <section id="stakeholders">
+            <h2>Farmers</h2>
+            <ul>
+                {% for farmer in farmers %}
+                    <li>
+                        <a href="{% url 'farmer_detail' pk=farmer.pk %}">
+                            <img src="{% static 'main_app/images/farmer.jpg' %}" alt="{{ farmer.name }}" class="stakeholder-image farmer-image">
+                            {{ farmer.name }} from {{ farmer.location }} - Product: {{ farmer.product }}
+                        </a>
+                        <a href="{% url 'order_farmer' farmer_id=farmer.pk %}" class="order-link">Order from {{ farmer.name }}</a>
+                    </li>
+                {% empty %}
+                    <li>No farmers available at the moment.</li>
+                {% endfor %}
+            </ul>
+
+            <h2>Processors</h2>
+            <ul>
+                {% for processor in processors %}
+                    <li>
+                        <a href="{% url 'processor_detail' pk=processor.pk %}">
+                            <img src="{% static 'main_app/images/processor.jpg' %}" alt="{{ processor.name }}" class="stakeholder-image processor-image">
+                            {{ processor.name }} - Type: {{ processor.process_type }}
+                        </a>
+                        <a href="{% url 'order_processor' processor_id=processor.pk %}" class="order-link">Order from {{ processor.name }}</a>
+                    </li>
+                {% empty %}
+                    <li>No processors available at the moment.</li>
+                {% endfor %}
+            </ul>
+
+            <h2>Distributors</h2>
+            <ul>
+                {% for distributor in distributors %}
+                    <li>
+                        <a href="{% url 'distributor_detail' pk=distributor.pk %}">
+                            <img src="{% static 'main_app/images/distributor.jpg' %}" alt="{{ distributor.name }}" class="stakeholder-image distributor-image">
+                            {{ distributor.name }} - Region: {{ distributor.region }}
+                        </a>
+                        <a href="{% url 'order_distributor' distributor_id=distributor.pk %}" class="order-link">Order from {{ distributor.name }}</a>
+                    </li>
+                {% empty %}
+                    <li>No distributors available at the moment.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Contact Us Form -->
+        <section id="contact-form">
+            <h2>Contact Us</h2>
+            <form method="post" id="contactForm">
+                {% csrf_token %}
+                {{ contact_form.as_p }}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            <p id="message"></p>
+        </section>
+
+        <!-- Authentication Forms Section -->
+        {% if not user.is_authenticated %}
+            <section id="auth-forms">
+                <!-- Login and Registration Forms -->
+                <div class="auth-form-container">
+                    <div class="login-form">
+                        <h2>Login</h2>
+                        <form method="post" action="{% url 'index' %}">
+                            {% csrf_token %}
+                            {{ login_form.as_p }}
+                            <button type="submit" name="login" class="btn btn-primary">Login</button>
+                        </form>
+                    </div>
+                    
+                    <div class="register-form">
+                        <h2>Register</h2>
+                        <form method="post" action="{% url 'index' %}">
+                            {% csrf_token %}
+                            {{ registration_form.as_p }}
+                            <button type="submit" name="register" class="btn btn-primary">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+
+    </div>
+
+    <script src="{% static 'main_app/js/scripts.js' %}"></script>
+</body>
+</html>

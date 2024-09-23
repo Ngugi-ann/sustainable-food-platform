@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create or Update Profile</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main_app/css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Create or Update Your Profile</h1>
+        </header>
+
+        <form method="post" action="{% url 'create_consumer_profile' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.as_p }}
+            </div>
+            <button type="submit" class="btn btn-primary">Save Profile</button>
+        </form>
+    </div>
+    <script src="{% static 'main_app/js/scripts.js' %}"></script>
+</body>
+</html>

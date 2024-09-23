@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ distributor.name }} - Distributor Details</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main_app/css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ distributor.name }}</h1>
+        <p><strong>Region Served:</strong> {{ distributor.region }}</p>
+        <p><strong>Contact Information:</strong> {{ distributor.contact_info }}</p>
+
+        <h2>Products Distributed</h2>
+        {% if distributor.product_set.all %}
+            <ul>
+                {% for product in distributor.product_set.all %}
+                    <li>
+                        <strong>{{ product.name }}</strong>: {{ product.description }} - ${{ product.price }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No products available from this distributor at the moment.</p>
+        {% endif %}
+
+        <!-- Link to place an order -->
+        <a href="{% url 'order_distributor' distributor.id %}">Order from {{ distributor.name }}</a>
+        <!-- Back to list of all stakeholders -->
+        <p><a href="{% url 'index' %}">Back to the list</a></p>
+    </div>
+</body>
+</html>

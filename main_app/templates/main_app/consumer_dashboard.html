@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumer Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main_app/css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Consumer Dashboard</h1>
+            <div class="user-info">
+                <p>Welcome, {{ user.username }}!</p>
+                <a href="{% url 'logout' %}" class="button">Logout</a>
+            </div>
+        </header>
+
+        <section id="dashboard-content">
+            <h2>Your Orders</h2>
+            
+            <!-- Display user orders or a message if no orders exist -->
+            {% if orders.exists %}
+                <ul>
+                    {% for order in orders %}
+                        <li>
+                            <strong>Product:</strong> {{ order.product.name }} <br>
+                            <strong>Quantity:</strong> {{ order.quantity }} <br>
+                            <strong>Ordered on:</strong> {{ order.ordered_on|date:"d M Y" }} <br>
+                            <strong>Status:</strong> {{ order.status|capfirst }} <br>
+                            <strong>Payment Method:</strong> {{ order.payment_method|capfirst }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>You haven't placed any orders yet.</p>
+            {% endif %}
+        </section>
+
+        <section id="profile-section">
+            <h2>Your Profile</h2>
+
+            <!-- Display profile update link -->
+            <p><a href="{% url 'create_consumer_profile' %}" class="button">Update Profile</a></p>
+        </section>
+    </div>
+
+    <script src="{% static 'main_app/js/scripts.js' %}"></script>
+</body>
+</html>

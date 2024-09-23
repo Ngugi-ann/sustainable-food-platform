@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Product</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'main_app/css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Order Product</h1>
+        </header>
+        
+        <section id="order-details">
+            <p>Ordering from:
+                {% if farmer %}
+                    <span class="stakeholder-info">Farmer: {{ farmer.name }}</span>
+                {% endif %}
+                {% if processor %}
+                    <span class="stakeholder-info">Processor: {{ processor.name }}</span>
+                {% endif %}
+                {% if distributor %}
+                    <span class="stakeholder-info">Distributor: {{ distributor.name }}</span>
+                {% endif %}
+            </p>
+        </section>
+
+        <section id="order-form">
+            <form method="post" 
+                  action="{% if farmer %}{% url 'order_farmer' farmer.id %}{% elif processor %}{% url 'order_processor' processor.id %}{% elif distributor %}{% url 'order_distributor' distributor.id %}{% endif %}">
+                {% csrf_token %}
+                
+                <!-- Render the form fields -->
+                <div class="form-group">
+                    {{ form.as_p }}
+                </div>
+
+                <!-- Payment Method Section -->
+                <fieldset>
+                    <legend>Choose Payment Method:</legend>
+                    {% for value, label in form.payment_method.field.choices %}
+                        <label>
+                            <input type="radio" name="payment_method" value="{{ value }}" {% if form.payment_method.value == value %}checked{% endif %}>
+                            <span>{{ label }}</span>
+                        </label>
+                    {% endfor %}
+                </fieldset>
+
+                <button type="submit" class="btn btn-primary">Place Order</button>
+            </form>
+        </section>
+
+        <footer>
+            <p>&copy; 2024 Sustainable Food Platform</p>
+        </footer>
+    </div>
+</body>
+</html>
